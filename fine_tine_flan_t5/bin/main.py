@@ -13,7 +13,7 @@ from peft import prepare_model_for_int8_training
 from datasets import load_dataset
 
 # optimized for RTX 4090. for larger GPUs, increase some of these?
-MICRO_BATCH_SIZE = 16  # this could actually be 5 but i like powers of 2
+MICRO_BATCH_SIZE = 8  # this could actually be 5 but i like powers of 2
 BATCH_SIZE = 128
 GRADIENT_ACCUMULATION_STEPS = BATCH_SIZE // MICRO_BATCH_SIZE
 EPOCHS = 3  # we don't always need 3 tbh
@@ -79,8 +79,9 @@ def main():
     tokenizer = AutoTokenizer.from_pretrained(BASE_MODEL, add_eos_token=True)
 
     if DEVICE == "cuda":
-        model = T5ForConditionalGeneration.from_pretrained(BASE_MODEL, load_in_8bit=True, device_map="auto")
-        model = prepare_model_for_int8_training(model)
+        model = T5ForConditionalGeneration.from_pretrained(BASE_MODEL, load_in_8bit=False, device_map="auto",
+                                                           torch_dtype=torch.float16)
+        # model = prepare_model_for_int8_training(model)
     else:
         model = T5ForConditionalGeneration.from_pretrained(BASE_MODEL)
 
@@ -149,7 +150,7 @@ def main():
             warmup_steps=100,
             num_train_epochs=EPOCHS,
             learning_rate=LEARNING_RATE,
-            use_mps_device=(DEVICE=="mps"),
+            use_mps_device=(DEVICE == "mps"),
             logging_steps=20,
             evaluation_strategy="steps" if VAL_SET_SIZE > 0 else "no",
             save_strategy="steps",
