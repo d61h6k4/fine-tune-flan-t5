@@ -149,7 +149,7 @@ def main():
             warmup_steps=100,
             num_train_epochs=EPOCHS,
             learning_rate=LEARNING_RATE,
-            use_mps_device=True,
+            use_mps_device=(DEVICE=="mps"),
             logging_steps=20,
             evaluation_strategy="steps" if VAL_SET_SIZE > 0 else "no",
             save_strategy="steps",
