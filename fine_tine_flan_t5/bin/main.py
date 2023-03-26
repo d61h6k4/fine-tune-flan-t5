@@ -79,8 +79,7 @@ def main():
     tokenizer = AutoTokenizer.from_pretrained(BASE_MODEL, add_eos_token=True)
 
     if DEVICE == "cuda":
-        model = T5ForConditionalGeneration.from_pretrained(BASE_MODEL, load_in_8bit=False, device_map="auto",
-                                                           torch_dtype=torch.float16)
+        model = T5ForConditionalGeneration.from_pretrained(BASE_MODEL)
         # model = prepare_model_for_int8_training(model)
     else:
         model = T5ForConditionalGeneration.from_pretrained(BASE_MODEL)
@@ -159,7 +158,6 @@ def main():
             output_dir=OUTPUT_DIR,
             save_total_limit=3,
             load_best_model_at_end=True if VAL_SET_SIZE > 0 else False,
-            fp16=(DEVICE == "cuda"),
         ),
         data_collator=transformers.DataCollatorForSeq2Seq(
             tokenizer,
