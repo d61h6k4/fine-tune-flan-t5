@@ -159,7 +159,7 @@ def main():
             output_dir=OUTPUT_DIR,
             save_total_limit=3,
             load_best_model_at_end=True if VAL_SET_SIZE > 0 else False,
-            half_precision_backend="auto"
+            fp16=(DEVICE == "cuda"),
         ),
         data_collator=transformers.DataCollatorForSeq2Seq(
             tokenizer,
