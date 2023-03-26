@@ -29,7 +29,7 @@ TARGET_MODULES = [
 ]
 LABEL_PAD_TOKEN_ID = -100
 
-BASE_MODEL = "google/flan-t5-xl"
+BASE_MODEL = "google/flan-t5-large"
 DATA_PATH = "alpaca_data_cleaned.json"
 OUTPUT_DIR = f"{DATA_PATH.split('_')[0]}_{BASE_MODEL.split('/')[1].replace('-', '_')}"
 
