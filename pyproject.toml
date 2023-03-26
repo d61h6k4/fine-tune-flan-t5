@@ -1,0 +1,31 @@
+[tool.poetry]
+name = "fine-tine-flan-t5"
+version = "0.1.0"
+description = ""
+authors = ["d61h6k4 <ddbihbka@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+packages = [{include = "fine_tine_flan_t5"}]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<3.12"
+datasets = "^2.10.0"
+py7zr = "^0.20.4"
+transformers = "^4.26.1"
+nltk = "^3.8.1"
+evaluate = "^0.4.0"
+rouge-score = "^0.1.2"
+tensorboardx = "^2.6"
+torch = "^2.0.0"
+peft = "^0.2.0"
+gradio = "^3.23.0"
+bitsandbytes = "^0.37.2"
+
+
+[tool.poetry.scripts]
+tune = "fine_tine_flan_t5.bin.main:main"
+show = "fine_tine_flan_t5.bin.generate:main"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
