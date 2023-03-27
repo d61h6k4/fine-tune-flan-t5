@@ -33,7 +33,7 @@ LABEL_PAD_TOKEN_ID = -100
 
 BASE_MODEL = "google/flan-t5-base"
 DATA_PATH = "alpaca_data_cleaned.json"
-OUTPUT_DIR = f"models/{DATA_PATH.split('_')[0]}_{BASE_MODEL.split('/')[1].replace('-', '_')}"
+OUTPUT_DIR = f"models/{DATA_PATH.split('_')[0]}_{BASE_MODEL.split('/')[1].replace('-', '_')}_2xo"
 if WITH_LORA:
     OUTPUT_DIR += "_lora"
 
