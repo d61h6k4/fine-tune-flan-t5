@@ -166,6 +166,8 @@ def main():
             save_total_limit=3,
             load_best_model_at_end=True if VAL_SET_SIZE > 0 else False,
             fp16=False,  # Loss is 0 with True
+            logging_dir="logs/",
+            report_to=["tensorboard"],
         ),
         data_collator=transformers.DataCollatorForSeq2Seq(
             tokenizer,
