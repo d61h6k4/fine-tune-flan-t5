@@ -6,8 +6,8 @@ import gradio as gr
 from transformers import AutoTokenizer, T5ForConditionalGeneration, GenerationConfig
 
 LOAD_8BIT = False
-BASE_MODEL = "google/flan-t5-base"
-LORA_WEIGHTS = "alpaca_flan_t5_base"
+BASE_MODEL = "google/flan-t5-large"
+LORA_WEIGHTS = "models/alpaca_flan_t5_large_lora"
 
 def main():
     tokenizer = AutoTokenizer.from_pretrained(BASE_MODEL)

@@ -19,6 +19,7 @@ GRADIENT_ACCUMULATION_STEPS = BATCH_SIZE // MICRO_BATCH_SIZE
 EPOCHS = 3  # we don't always need 3 tbh
 LEARNING_RATE = 3e-3  # the Karpathy constant x10
 CUTOFF_LEN = 256  # 256 accounts for about 96% of the data
+WITH_LORA = False
 LORA_R = 8
 LORA_ALPHA = 16
 LORA_DROPOUT = 0.05
@@ -31,7 +32,9 @@ LABEL_PAD_TOKEN_ID = -100
 
 BASE_MODEL = "google/flan-t5-large"
 DATA_PATH = "alpaca_data_cleaned.json"
-OUTPUT_DIR = f"{DATA_PATH.split('_')[0]}_{BASE_MODEL.split('/')[1].replace('-', '_')}"
+OUTPUT_DIR = f"models/{DATA_PATH.split('_')[0]}_{BASE_MODEL.split('/')[1].replace('-', '_')}"
+if WITH_LORA:
+    OUTPUT_DIR += "_lora"
 
 if torch.cuda.is_available():
     DEVICE = "cuda"
@@ -83,16 +86,17 @@ def main():
         # model = prepare_model_for_int8_training(model)
     else:
         model = T5ForConditionalGeneration.from_pretrained(BASE_MODEL)
-    #
-    # config = LoraConfig(
-    #     r=LORA_R,
-    #     lora_alpha=LORA_ALPHA,
-    #     target_modules=TARGET_MODULES,
-    #     lora_dropout=LORA_DROPOUT,
-    #     bias="none",
-    #     task_type=peft.TaskType.SEQ_2_SEQ_LM
-    # )
-    # model = get_peft_model(model, config)
+
+    if WITH_LORA:
+        config = LoraConfig(
+            r=LORA_R,
+            lora_alpha=LORA_ALPHA,
+            target_modules=TARGET_MODULES,
+            lora_dropout=LORA_DROPOUT,
+            bias="none",
+            task_type=peft.TaskType.SEQ_2_SEQ_LM
+        )
+        model = get_peft_model(model, config)
 
     def tokenize(prompt, response):
         # there's probably a way to do this with the tokenizer settings
@@ -158,7 +162,7 @@ def main():
             output_dir=OUTPUT_DIR,
             save_total_limit=3,
             load_best_model_at_end=True if VAL_SET_SIZE > 0 else False,
-            fp16=False,
+            fp16=True,
         ),
         data_collator=transformers.DataCollatorForSeq2Seq(
             tokenizer,
