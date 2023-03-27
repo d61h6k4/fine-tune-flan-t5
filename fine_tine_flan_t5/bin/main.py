@@ -162,7 +162,7 @@ def main():
             output_dir=OUTPUT_DIR,
             save_total_limit=3,
             load_best_model_at_end=True if VAL_SET_SIZE > 0 else False,
-            fp16=True,
+            fp16=False,  # Loss is 0 with True
         ),
         data_collator=transformers.DataCollatorForSeq2Seq(
             tokenizer,
