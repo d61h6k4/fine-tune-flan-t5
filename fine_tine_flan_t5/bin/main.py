@@ -16,7 +16,7 @@ from datasets import load_dataset
 MICRO_BATCH_SIZE = 8  # this could actually be 5 but i like powers of 2
 BATCH_SIZE = 128
 GRADIENT_ACCUMULATION_STEPS = BATCH_SIZE // MICRO_BATCH_SIZE
-EPOCHS = 3  # we don't always need 3 tbh
+EPOCHS = 10  # we don't always need 3 tbh
 LEARNING_RATE = 3e-3  # the Karpathy constant x10
 CUTOFF_LEN = 256  # 256 accounts for about 96% of the data
 WITH_LORA = True

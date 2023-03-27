@@ -6,8 +6,8 @@ import gradio as gr
 from transformers import AutoTokenizer, T5ForConditionalGeneration, GenerationConfig
 
 LOAD_8BIT = False
-BASE_MODEL = "google/flan-t5-large"
-LORA_WEIGHTS = "models/alpaca_flan_t5_large_lora"
+BASE_MODEL = "google/flan-t5-base"
+LORA_WEIGHTS = "models/alpaca_flan_t5_base_lora"
 
 def main():
     tokenizer = AutoTokenizer.from_pretrained(BASE_MODEL)
@@ -148,6 +148,6 @@ def main():
                 label="Output",
             )
         ],
-        title="🦙🌲 Alpaca-LoRA",
+        title=f"🦙🌲 Alpaca-LoRA {BASE_MODEL}",
         description="Alpaca-LoRA is a 7B-parameter LLaMA model finetuned to follow instructions. It is trained on the [Stanford Alpaca](https://github.com/tatsu-lab/stanford_alpaca) dataset and makes use of the Huggingface LLaMA implementation. For more information, please visit [the project's website](https://github.com/tloen/alpaca-lora).",
     ).launch()
