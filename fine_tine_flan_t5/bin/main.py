@@ -83,16 +83,16 @@ def main():
         # model = prepare_model_for_int8_training(model)
     else:
         model = T5ForConditionalGeneration.from_pretrained(BASE_MODEL)
-
-    config = LoraConfig(
-        r=LORA_R,
-        lora_alpha=LORA_ALPHA,
-        target_modules=TARGET_MODULES,
-        lora_dropout=LORA_DROPOUT,
-        bias="none",
-        task_type=peft.TaskType.SEQ_2_SEQ_LM
-    )
-    model = get_peft_model(model, config)
+    #
+    # config = LoraConfig(
+    #     r=LORA_R,
+    #     lora_alpha=LORA_ALPHA,
+    #     target_modules=TARGET_MODULES,
+    #     lora_dropout=LORA_DROPOUT,
+    #     bias="none",
+    #     task_type=peft.TaskType.SEQ_2_SEQ_LM
+    # )
+    # model = get_peft_model(model, config)
 
     def tokenize(prompt, response):
         # there's probably a way to do this with the tokenizer settings
@@ -139,11 +139,11 @@ def main():
 
     print_some(train_data)
 
-    trainer = transformers.Trainer(
+    trainer = transformers.Seq2SeqTrainer(
         model=model,
         train_dataset=train_data,
         eval_dataset=val_data,
-        args=transformers.TrainingArguments(
+        args=transformers.Seq2SeqTrainingArguments(
             per_device_train_batch_size=MICRO_BATCH_SIZE,
             gradient_accumulation_steps=GRADIENT_ACCUMULATION_STEPS,
             warmup_steps=100,
@@ -158,6 +158,7 @@ def main():
             output_dir=OUTPUT_DIR,
             save_total_limit=3,
             load_best_model_at_end=True if VAL_SET_SIZE > 0 else False,
+            fp16=False,
         ),
         data_collator=transformers.DataCollatorForSeq2Seq(
             tokenizer,
