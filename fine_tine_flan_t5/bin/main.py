@@ -13,7 +13,7 @@ from peft import prepare_model_for_int8_training
 from datasets import load_dataset
 
 # optimized for RTX 4090. for larger GPUs, increase some of these?
-MICRO_BATCH_SIZE = 4  # this could actually be 5 but i like powers of 2
+MICRO_BATCH_SIZE = 16  # this could actually be 5 but i like powers of 2
 BATCH_SIZE = 128
 GRADIENT_ACCUMULATION_STEPS = BATCH_SIZE // MICRO_BATCH_SIZE
 EPOCHS = 3  # we don't always need 3 tbh
@@ -30,7 +30,7 @@ TARGET_MODULES = [
 ]
 LABEL_PAD_TOKEN_ID = -100
 
-BASE_MODEL = "google/flan-t5-large"
+BASE_MODEL = "google/flan-t5-base"
 DATA_PATH = "alpaca_data_cleaned.json"
 OUTPUT_DIR = f"models/{DATA_PATH.split('_')[0]}_{BASE_MODEL.split('/')[1].replace('-', '_')}"
 if WITH_LORA:
