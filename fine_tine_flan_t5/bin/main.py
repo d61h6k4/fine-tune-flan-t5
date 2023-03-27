@@ -18,7 +18,8 @@ BATCH_SIZE = 128
 GRADIENT_ACCUMULATION_STEPS = BATCH_SIZE // MICRO_BATCH_SIZE
 EPOCHS = 10  # we don't always need 3 tbh
 LEARNING_RATE = 3e-3  # the Karpathy constant x10
-CUTOFF_LEN = 256  # 256 accounts for about 96% of the data
+INPUT_CUTOFF_LEN = 255  # 256 accounts for about 96% of the data
+OUTPUT_CUTOFF_LEN = 511
 WITH_LORA = True
 LORA_R = 8
 LORA_ALPHA = 16
@@ -99,18 +100,19 @@ def main():
         model = get_peft_model(model, config)
 
     def tokenize(prompt, response):
-        # there's probably a way to do this with the tokenizer settings
-        # but again, gotta move fast
-        _tokenizer = lambda s: tokenizer(
-            s,
+
+        result = tokenizer(
+            prompt,
             truncation=True,
-            max_length=CUTOFF_LEN + 1,
+            max_length=INPUT_CUTOFF_LEN + 1,
             padding="max_length",
         )
-        result = _tokenizer(
-            prompt
+        labels = tokenizer(
+            response,
+            truncation=True,
+            max_length=OUTPUT_CUTOFF_LEN + 1,
+            padding="max_length",
         )
-        labels = _tokenizer(response)
         labels["input_ids"] = [
             (l if l != tokenizer.pad_token_id else LABEL_PAD_TOKEN_ID) for l in labels["input_ids"]
         ]
@@ -131,6 +133,7 @@ def main():
         train_val = data["train"].train_test_split(
             test_size=VAL_SET_SIZE, shuffle=True, seed=42
         )
+
         train_data = train_val["train"].shuffle().map(generate_and_tokenize_prompt)
         val_data = train_val["test"].shuffle().map(generate_and_tokenize_prompt)
 
